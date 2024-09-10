@@ -1,6 +1,8 @@
 import pandas as pd
 from tinkoff.invest import MoneyValue, Quotation, Account, PortfolioResponse, PortfolioPosition
 
+from instruments import Instruments
+
 
 def money_value_str(val: MoneyValue) -> str:
     return str(val.units + val.nano * 10**-9) + ' ' + val.currency
@@ -44,3 +46,38 @@ def show_portfolio_stats(portfolio: PortfolioResponse):
     print('Валюта: ', money_value_str(currencies))
     print('---------------------------------')
     print('Прибыль: ', quotation_str(exp_yield) + '%')
+
+def positions_df(positions: [PortfolioPosition]) -> pd.DataFrame:
+    positions_df_list = []
+    for position in positions:
+        instrument = Instruments.get(position.figi)
+        positions_df_list += [[
+            instrument.figi,
+            instrument.name,
+            instrument.instrument_type,
+            instrument.country_of_risk_name,
+            money_value_str(position.current_price),
+            quotation_str(position.quantity),
+            quotation_str(position.expected_yield) + ' ' + instrument.currency,
+            money_value_str(position.average_position_price),
+            money_value_str(position.average_position_price_fifo),
+            quotation_str(position.average_position_price_pt),
+            money_value_str(position.current_nkd)
+        ]]
+
+    positions_df = pd.DataFrame(positions_df_list)
+    positions_df.index = [''] * len(positions)
+    positions_df.columns = [
+        'figi',
+        'name',
+        'type',
+        'country',
+        'price',
+        'quantity',
+        'yield',
+        'average_price',
+        'average_price_FIFO',
+        'average_price_pt',
+        'nkd'
+    ]
+    return positions_df
