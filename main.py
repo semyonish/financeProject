@@ -1,14 +1,10 @@
-from TClient import TClient, TMergeClient
+from TClient import TMergeClient
+from stats import Portfolio
 from tokens import TOKENS
-from useful_functions import accounts_dataframe, positions_df
 
 if __name__ == '__main__':
     client = TMergeClient(TOKENS)
 
-    print(accounts_dataframe(client.accounts))
-
-    print(positions_df(client.portfolios[0].positions))
-
-
-
-
+    portfolio = Portfolio(client.portfolios)
+    portfolio.print_info()
+    portfolio.print_positions()

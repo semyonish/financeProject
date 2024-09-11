@@ -12,6 +12,7 @@ CURRENCY_FIGIS = {
 
 DOLLAR_FIGI = CURRENCY_FIGIS['usd']
 
+
 class Instruments:
     cache = dict()
     client = None
@@ -26,4 +27,3 @@ class Instruments:
                     id_type=InstrumentIdType.INSTRUMENT_ID_TYPE_FIGI, id=figi
                 ).instrument)
         return Instruments.cache[figi]
-

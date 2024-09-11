@@ -5,16 +5,20 @@ from instruments import Instruments
 
 
 def money_value_str(val: MoneyValue) -> str:
-    return str(val.units + val.nano * 10**-9) + ' ' + val.currency
+    return str(val.units + val.nano * 10 ** -9) + ' ' + val.currency
+
 
 def money_value_int(val: MoneyValue) -> int:
-    return val.units + val.nano * 10**-9
+    return val.units + val.nano * 10 ** -9
+
 
 def quotation_str(val: Quotation) -> str:
-    return str(val.units + val.nano * 10**-9)
+    return str(val.units + val.nano * 10 ** -9)
+
 
 def quotation_int(val: Quotation) -> int:
-    return val.units + val.nano * 10**-9
+    return val.units + val.nano * 10 ** -9
+
 
 def accounts_dataframe(accounts: [Account]) -> pd.DataFrame:
     df_list = []
@@ -31,6 +35,7 @@ def accounts_dataframe(accounts: [Account]) -> pd.DataFrame:
     df.columns = ['id', 'name', 'status', 'type']
     return df
 
+
 def show_portfolio_stats(portfolio: PortfolioResponse):
     shares = portfolio.total_amount_shares
     bonds = portfolio.total_amount_bonds
@@ -38,14 +43,19 @@ def show_portfolio_stats(portfolio: PortfolioResponse):
     futures = portfolio.total_amount_futures
     currencies = portfolio.total_amount_currencies
     exp_yield = portfolio.expected_yield
+    total = portfolio.total_amount_portfolio
 
+    print('---------------------------------')
     print('Акции: ', money_value_str(shares))
     print('Облигации: ', money_value_str(bonds))
     print('Фонды: ', money_value_str(etfs))
     print('Фьючерсы: ', money_value_str(futures))
     print('Валюта: ', money_value_str(currencies))
     print('---------------------------------')
+    print('Всего: ', money_value_str(total))
     print('Прибыль: ', quotation_str(exp_yield) + '%')
+    print('---------------------------------')
+
 
 def positions_df(positions: [PortfolioPosition]) -> pd.DataFrame:
     positions_df_list = []
@@ -81,3 +91,12 @@ def positions_df(positions: [PortfolioPosition]) -> pd.DataFrame:
         'nkd'
     ]
     return positions_df
+
+def percent_str(value: int, total: int) -> str:
+    return f'{100 * value / total:.2f}%'
+
+def rub_str(value: int) -> str:
+    return f'{value:.2f} rub'
+
+def rub_percent_str(value: int, total: int) -> str:
+    return f'{rub_str(value)} ({percent_str(value, total)})'

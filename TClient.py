@@ -1,5 +1,8 @@
 from tinkoff.invest import Client, AccountType, AccountStatus
 
+from useful_functions import accounts_dataframe
+
+
 class TClient:
     def __init__(self, token: str):
         self.client = (Client(token).__enter__())
@@ -7,14 +10,13 @@ class TClient:
 
         self.portfolios = []
         for account in self.accounts:
-            if (account.type in [AccountType.ACCOUNT_TYPE_TINKOFF,
-                                AccountType.ACCOUNT_TYPE_TINKOFF_IIS]
+            if (account.type in [AccountType.ACCOUNT_TYPE_TINKOFF_IIS]
                     and account.status == AccountStatus.ACCOUNT_STATUS_OPEN):
                 self.portfolios += [self.client.operations.get_portfolio(account_id=account.id)]
 
 
 class TMergeClient:
-    def __init__(self, tokens:[str]):
+    def __init__(self, tokens: [str]):
         self.t_clients = [TClient(token) for token in tokens]
 
         self.accounts = []
@@ -23,3 +25,6 @@ class TMergeClient:
         for t_client in self.t_clients:
             self.accounts += t_client.accounts
             self.portfolios += t_client.portfolios
+
+    def print_accounts(self):
+        print(accounts_dataframe(self.accounts))
