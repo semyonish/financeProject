@@ -1,6 +1,6 @@
 from tinkoff.invest import Instrument, InstrumentIdType, Client
 
-from tokens import TOKENS
+from values import TOKENS
 
 CURRENCY_FIGIS = {
     'usd': 'BBG0013HGFT4',

@@ -8,7 +8,7 @@ def money_value_str(val: MoneyValue) -> str:
     return str(val.units + val.nano * 10 ** -9) + ' ' + val.currency
 
 
-def money_value_int(val: MoneyValue) -> int:
+def money_value_float(val: MoneyValue) -> float:
     return val.units + val.nano * 10 ** -9
 
 
@@ -16,7 +16,7 @@ def quotation_str(val: Quotation) -> str:
     return str(val.units + val.nano * 10 ** -9)
 
 
-def quotation_int(val: Quotation) -> int:
+def quotation_float(val: Quotation) -> float:
     return val.units + val.nano * 10 ** -9
 
 
@@ -92,11 +92,17 @@ def positions_df(positions: [PortfolioPosition]) -> pd.DataFrame:
     ]
     return positions_df
 
-def percent_str(value: int, total: int) -> str:
-    return f'{100 * value / total:.2f}%'
+def float2f(value: float) -> str:
+    return f'{value:.2f}'
 
-def rub_str(value: int) -> str:
+def percent2f(value: float, total: float) -> str:
+    return f'{100 * value / total:.2f}'
+
+def percent_str(value: float, total: float) -> str:
+    return f'{percent2f(value, total)}%'
+
+def rub_str(value: float) -> str:
     return f'{value:.2f} rub'
 
-def rub_percent_str(value: int, total: int) -> str:
+def rub_percent_str(value: float, total: float) -> str:
     return f'{rub_str(value)} ({percent_str(value, total)})'

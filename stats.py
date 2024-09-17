@@ -1,7 +1,9 @@
+import pandas as pd
 from tinkoff.invest import PortfolioResponse
 
 from instruments import Instruments
-from useful_functions import quotation_int, money_value_int, rub_percent_str, rub_str, percent_str
+from useful_functions import quotation_float, money_value_float, rub_percent_str, rub_str, percent_str, float2f, \
+    percent2f
 
 
 class Portfolio:
@@ -17,24 +19,24 @@ class Portfolio:
         self.total = 0
 
         for portfolio in portfolios:
-            self.total_shares += money_value_int(portfolio.total_amount_shares)
-            self.total_bonds += money_value_int(portfolio.total_amount_bonds)
-            self.total_futures += money_value_int(portfolio.total_amount_futures)
-            self.total_etfs += money_value_int(portfolio.total_amount_etf)
-            self.total_currencies += money_value_int(portfolio.total_amount_currencies)
-            self.total += money_value_int(portfolio.total_amount_portfolio)
+            self.total_shares += money_value_float(portfolio.total_amount_shares)
+            self.total_bonds += money_value_float(portfolio.total_amount_bonds)
+            self.total_futures += money_value_float(portfolio.total_amount_futures)
+            self.total_etfs += money_value_float(portfolio.total_amount_etf)
+            self.total_currencies += money_value_float(portfolio.total_amount_currencies)
+            self.total += money_value_float(portfolio.total_amount_portfolio)
 
             for position in portfolio.positions:
                 figi = position.figi
                 self.positions[figi] = position
-                self.counts[figi] = self.counts.get(figi, 0) + quotation_int(position.quantity)
+                self.counts[figi] = self.counts.get(figi, 0) + quotation_float(position.quantity)
 
         self.sums = {}
         self.names = {}
         for figi in self.positions:
             instrument = Instruments.get(figi)
             self.names[figi] = instrument.name
-            self.sums[figi] = self.counts[figi] * money_value_int(self.positions[figi].current_price)
+            self.sums[figi] = self.counts[figi] * money_value_float(self.positions[figi].current_price)
 
         self.sums = dict(sorted(self.sums.items(), key=lambda item: item[1], reverse=True))
 
@@ -52,3 +54,24 @@ class Portfolio:
     def print_positions(self):
         for figi in self.sums:
             print(f'{percent_str(self.sums[figi], self.total)} | {self.names[figi]} | {rub_str(self.sums[figi])}')
+
+    def info_dataframe(self) -> pd.DataFrame:
+        df_data = [
+            ['Aкции', float2f(self.total_shares), percent_str(self.total_shares, self.total)]
+        # print('Акции:     ', rub_percent_str(self.total_shares, self.total))
+        # print('Облигации: ', rub_percent_str(self.total_bonds, self.total))
+        # print('Фонды:     ', rub_percent_str(self.total_etfs, self.total))
+        # print('Фьючерсы:  ', rub_percent_str(self.total_futures, self.total))
+        # print('Валюта:    ', rub_percent_str(self.total_currencies, self.total))
+        # print('---------------------------------')
+        # print('Всего:     ', rub_str(self.total))
+        ]
+
+    def positions_dataframe(self) -> pd.DataFrame:
+        df_data = {
+            'Имя': [self.names[figi] for figi in self.sums],
+            'Сумма': [f'{self.sums[figi]:.2f}' for figi in self.sums],
+            'Доля': [percent2f(self.sums[figi], self.total) for figi in self.sums]
+        }
+
+        return pd.DataFrame(df_data)
