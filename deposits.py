@@ -1,13 +1,13 @@
-DEPOSITS = []
-CREDITS = []
+from bank_stats import BankStats
+
 
 class Deposit:
-    def __init__(self, value: float, percent: float):
+    def __init__(self, name:str, value: float, percent: float):
+        self.name = name
         self.value = value
         self.percent = percent
 
-        global DEPOSITS
-        DEPOSITS += [self]
+        BankStats.addDeposit(self)
 
     def get_month_income(self) -> float:
         return self.value * self.percent / 100 / 12
@@ -16,11 +16,11 @@ class Deposit:
         return self.value
 
 class CreditCard:
-    def __init__(self, value: float):
+    def __init__(self, name:str, value: float):
+        self.name = name
         self.value = value
 
-        global CREDITS
-        CREDITS += [self]
+        BankStats.addCredit(self)
 
     def sum_with_multiplier(self) -> float:
         return self.value * -1

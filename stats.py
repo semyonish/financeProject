@@ -68,10 +68,12 @@ class Portfolio:
             ['Фьючерсы', float2f(self.total_futures), percent_str(self.total_futures, self.total)],
             ['Валюта', float2f(self.total_currencies), percent_str(self.total_currencies, self.total)],
             ['', '', ''],
-            ['Всего', rub_str(self.total), '']
+            ['Всего', float2f(self.total), '']
         ]
 
-        return pd.DataFrame(df_data)
+        df = pd.DataFrame(df_data)
+        df.columns = ['', '', '']
+        return df
 
     def positions_dataframe(self) -> pd.DataFrame:
         df_data = {

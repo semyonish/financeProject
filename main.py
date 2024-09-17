@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import index
 
 import pandas as pd
 
@@ -16,8 +17,8 @@ if __name__ == '__main__':
     portfolio.print_positions()
 
     with pd.ExcelWriter(f'data/{datetime.now().date()}.xlsx') as writer:
-        portfolio.info_dataframe().to_excel(writer, sheet_name='Info')
-        portfolio.positions_dataframe().to_excel(writer, sheet_name='Positions')
+        portfolio.info_dataframe().to_excel(writer, sheet_name='Info', index=False)
+        portfolio.positions_dataframe().to_excel(writer, sheet_name='Positions', index=False)
 
 
 
