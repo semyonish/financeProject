@@ -5,6 +5,9 @@ from instruments import Instruments
 from useful_functions import quotation_float, money_value_float, rub_percent_str, rub_str, percent_str, float2f, \
     percent2f
 
+FUTURES_X1000_FIGIS = [
+    'FUTCNY122400'
+]
 
 class Portfolio:
     def __init__(self, portfolios: [PortfolioResponse]):
@@ -37,6 +40,8 @@ class Portfolio:
             instrument = Instruments.get(figi)
             self.names[figi] = instrument.name
             self.sums[figi] = self.counts[figi] * money_value_float(self.positions[figi].current_price)
+            if figi in FUTURES_X1000_FIGIS:
+                self.sums[figi] *= 1000
 
         self.sums = dict(sorted(self.sums.items(), key=lambda item: item[1], reverse=True))
 
@@ -53,19 +58,20 @@ class Portfolio:
 
     def print_positions(self):
         for figi in self.sums:
-            print(f'{percent_str(self.sums[figi], self.total)} | {self.names[figi]} | {rub_str(self.sums[figi])}')
+            print(f'{percent_str(self.sums[figi], self.total)} | {self.names[figi]} | {rub_str(self.sums[figi])} | {figi}')
 
     def info_dataframe(self) -> pd.DataFrame:
         df_data = [
-            ['Aкции', float2f(self.total_shares), percent_str(self.total_shares, self.total)]
-        # print('Акции:     ', rub_percent_str(self.total_shares, self.total))
-        # print('Облигации: ', rub_percent_str(self.total_bonds, self.total))
-        # print('Фонды:     ', rub_percent_str(self.total_etfs, self.total))
-        # print('Фьючерсы:  ', rub_percent_str(self.total_futures, self.total))
-        # print('Валюта:    ', rub_percent_str(self.total_currencies, self.total))
-        # print('---------------------------------')
-        # print('Всего:     ', rub_str(self.total))
+            ['Aкции', float2f(self.total_shares), percent_str(self.total_shares, self.total)],
+            ['Облигации', float2f(self.total_bonds), percent_str(self.total_bonds, self.total)],
+            ['Фонды', float2f(self.total_etfs), percent_str(self.total_etfs, self.total)],
+            ['Фьючерсы', float2f(self.total_futures), percent_str(self.total_futures, self.total)],
+            ['Валюта', float2f(self.total_currencies), percent_str(self.total_currencies, self.total)],
+            ['', '', ''],
+            ['Всего', rub_str(self.total), '']
         ]
+
+        return pd.DataFrame(df_data)
 
     def positions_dataframe(self) -> pd.DataFrame:
         df_data = {

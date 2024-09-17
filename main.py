@@ -15,7 +15,8 @@ if __name__ == '__main__':
     portfolio.print_info()
     portfolio.print_positions()
 
-    with pd.ExcelWriter(f'stats-{datetime.now().date()}.xlsx') as writer:
+    with pd.ExcelWriter(f'data/{datetime.now().date()}.xlsx') as writer:
+        portfolio.info_dataframe().to_excel(writer, sheet_name='Info')
         portfolio.positions_dataframe().to_excel(writer, sheet_name='Positions')
 
 
