@@ -9,6 +9,7 @@ FUTURES_X1000_FIGIS = [
     'FUTCNY122400'
 ]
 
+
 class Portfolio:
     def __init__(self, portfolios: [PortfolioResponse]):
         self.positions = {}  # figi -> position
@@ -58,17 +59,18 @@ class Portfolio:
 
     def print_positions(self):
         for figi in self.sums:
-            print(f'{percent_str(self.sums[figi], self.total)} | {self.names[figi]} | {rub_str(self.sums[figi])} | {figi}')
+            print(
+                f'{percent_str(self.sums[figi], self.total)} | {self.names[figi]} | {rub_str(self.sums[figi])} | {figi}')
 
     def info_dataframe(self) -> pd.DataFrame:
         df_data = [
-            ['Aкции', float2f(self.total_shares), percent_str(self.total_shares, self.total)],
-            ['Облигации', float2f(self.total_bonds), percent_str(self.total_bonds, self.total)],
-            ['Фонды', float2f(self.total_etfs), percent_str(self.total_etfs, self.total)],
-            ['Фьючерсы', float2f(self.total_futures), percent_str(self.total_futures, self.total)],
-            ['Валюта', float2f(self.total_currencies), percent_str(self.total_currencies, self.total)],
+            ['Aкции', self.total_shares, percent_str(self.total_shares, self.total)],
+            ['Облигации', self.total_bonds, percent_str(self.total_bonds, self.total)],
+            ['Фонды', self.total_etfs, percent_str(self.total_etfs, self.total)],
+            ['Фьючерсы', self.total_futures, percent_str(self.total_futures, self.total)],
+            ['Валюта', self.total_currencies, percent_str(self.total_currencies, self.total)],
             ['', '', ''],
-            ['Всего', float2f(self.total), '']
+            ['Всего', self.total, '']
         ]
 
         df = pd.DataFrame(df_data)
@@ -78,7 +80,7 @@ class Portfolio:
     def positions_dataframe(self) -> pd.DataFrame:
         df_data = {
             'Имя': [self.names[figi] for figi in self.sums],
-            'Сумма': [f'{self.sums[figi]:.2f}' for figi in self.sums],
+            'Сумма': [self.sums[figi] for figi in self.sums],
             'Доля': [percent2f(self.sums[figi], self.total) for figi in self.sums]
         }
 
