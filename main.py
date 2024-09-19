@@ -9,18 +9,18 @@ from values import TOKENS
 
 if __name__ == '__main__':
     print(datetime.now().date())
+    print('=======================================================================')
 
     client = TMergeClient(TOKENS)
 
     portfolio = Portfolio(client.portfolios)
     portfolio.print_info()
-    portfolio.print_positions()
+    print('=======================================================================')
+    print(portfolio.positions_dataframe())
+    print('=======================================================================')
     print(BankStats.info_dataframe())
 
     with pd.ExcelWriter(f'data/{datetime.now().date()}.xlsx') as writer:
         portfolio.info_dataframe().to_excel(writer, sheet_name='Info', index=False, header=False)
         portfolio.positions_dataframe().to_excel(writer, sheet_name='Positions', index=False)
-        BankStats.info_dataframe().to_excel(writer, sheet_name='Банк', index=False, header=False)
-
-    # print(sum(map(lambda x: x.get_month_income(), DEPOSITS)))
-    # print(sum(map(lambda x: x.sum_with_multiplier(), ALL_BANK)))
+        BankStats.info_dataframe().to_excel(writer, sheet_name='Bank', index=False, header=False)

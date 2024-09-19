@@ -90,17 +90,20 @@ def show_portfolio_stats(portfolio: PortfolioResponse):
 #     ]
 #     return positions_df
 
+def excel_number(value: str) -> str:
+    return value.replace('.', ',')
+
 def float2f(value: float) -> str:
-    return f'{value:.2f}'
+    return excel_number(f'{value:.2f}')
 
 def percent2f(value: float, total: float) -> str:
-    return f'{100 * value / total:.2f}'
+    return excel_number(f'{100 * value / total:.2f}')
 
 def percent_str(value: float, total: float) -> str:
-    return f'{percent2f(value, total)}%'
+    return excel_number(f'{percent2f(value, total)}%')
 
 def rub_str(value: float) -> str:
-    return f'{value:.2f} rub'
+    return excel_number(f'{value:.2f} rub')
 
 def rub_percent_str(value: float, total: float) -> str:
-    return f'{rub_str(value)} ({percent_str(value, total)})'
+    return excel_number(f'{rub_str(value)} ({percent_str(value, total)})')

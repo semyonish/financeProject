@@ -27,23 +27,23 @@ class BankStats:
             month_income = deposit.get_month_income()
             month_income_sum += month_income
             deposit_sum += deposit.value
-            df_data += [[deposit.name, deposit.value, deposit.percent, float2f(month_income)]]
+            df_data += [[deposit.name, float2f(deposit.value), float2f(deposit.percent), float2f(month_income)]]
 
         df_data += [['', '', '', '']]
-        df_data += [['Всего', deposit_sum, '', float2f(month_income_sum)]]
+        df_data += [['Всего', float2f(deposit_sum), '', float2f(month_income_sum)]]
         df_data += [['', '', '', '']]
         df_data += [['Кредиты', '', '', '']]
         df_data += [['Имя', 'Сумма', '', '']]
 
         for credit in BankStats.CREDITS:
-            df_data += [[credit.name, credit.value, '', '']]
+            df_data += [[credit.name, float2f(credit.value), '', '']]
             credit_sum += credit.value
 
         df_data += [['', '', '', '']]
-        df_data += [['Всего', credit_sum, '', '']]
+        df_data += [['Всего', float2f(credit_sum), '', '']]
 
         df_data += [['', '', '', '']]
-        df_data += [['Баланс', deposit_sum - credit_sum, '', '']]
+        df_data += [['Баланс', float2f(deposit_sum - credit_sum), '', '']]
 
         df = pd.DataFrame(df_data)
         return df

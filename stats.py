@@ -47,7 +47,6 @@ class Portfolio:
         self.sums = dict(sorted(self.sums.items(), key=lambda item: item[1], reverse=True))
 
     def print_info(self):
-        print('---------------------------------')
         print('Акции:     ', rub_percent_str(self.total_shares, self.total))
         print('Облигации: ', rub_percent_str(self.total_bonds, self.total))
         print('Фонды:     ', rub_percent_str(self.total_etfs, self.total))
@@ -55,7 +54,6 @@ class Portfolio:
         print('Валюта:    ', rub_percent_str(self.total_currencies, self.total))
         print('---------------------------------')
         print('Всего:     ', rub_str(self.total))
-        print('---------------------------------')
 
     def print_positions(self):
         for figi in self.sums:
@@ -64,13 +62,13 @@ class Portfolio:
 
     def info_dataframe(self) -> pd.DataFrame:
         df_data = [
-            ['Aкции', self.total_shares, percent_str(self.total_shares, self.total)],
-            ['Облигации', self.total_bonds, percent_str(self.total_bonds, self.total)],
-            ['Фонды', self.total_etfs, percent_str(self.total_etfs, self.total)],
-            ['Фьючерсы', self.total_futures, percent_str(self.total_futures, self.total)],
-            ['Валюта', self.total_currencies, percent_str(self.total_currencies, self.total)],
+            ['Aкции', float2f(self.total_shares), percent_str(self.total_shares, self.total)],
+            ['Облигации', float2f(self.total_bonds), percent_str(self.total_bonds, self.total)],
+            ['Фонды', float2f(self.total_etfs), percent_str(self.total_etfs, self.total)],
+            ['Фьючерсы', float2f(self.total_futures), percent_str(self.total_futures, self.total)],
+            ['Валюта', float2f(self.total_currencies), percent_str(self.total_currencies, self.total)],
             ['', '', ''],
-            ['Всего', self.total, '']
+            ['Всего', float2f(self.total), '']
         ]
 
         df = pd.DataFrame(df_data)
@@ -80,7 +78,7 @@ class Portfolio:
     def positions_dataframe(self) -> pd.DataFrame:
         df_data = {
             'Имя': [self.names[figi] for figi in self.sums],
-            'Сумма': [self.sums[figi] for figi in self.sums],
+            'Сумма': [float2f(self.sums[figi]) for figi in self.sums],
             'Доля': [percent2f(self.sums[figi], self.total) for figi in self.sums]
         }
 
