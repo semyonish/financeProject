@@ -1,12 +1,21 @@
 import pandas as pd
-from tinkoff.invest import PortfolioResponse
+from tinkoff.invest import PortfolioResponse, InstrumentType
 
-from instruments import Instruments
+from instruments import Instruments, DOLLAR_FIGI, DOLLAR_CURRENCY
 from useful_functions import quotation_float, money_value_float, rub_percent_str, rub_str, percent_str, float2f, \
     percent2f
 
-FUTURES_X1000_FIGIS = [
-    'FUTCNY122400'
+FUTURES_X_1000_FIGIS_PREFIXES = [
+    'FUTCNY'
+]
+
+FUTURES_X_USD_FIGIS_PREFIXES = [
+    'FUTSPY',
+    'FUTNASD'
+]
+
+FUTURES_X_0_01_FIGIS_PREFIXES = [
+    'FUTNASD'
 ]
 
 
@@ -25,7 +34,7 @@ class Portfolio:
         for portfolio in portfolios:
             self.total_shares += money_value_float(portfolio.total_amount_shares)
             self.total_bonds += money_value_float(portfolio.total_amount_bonds)
-            self.total_futures += money_value_float(portfolio.total_amount_futures)
+            self.total_futures += abs(money_value_float(portfolio.total_amount_futures))
             self.total_etfs += money_value_float(portfolio.total_amount_etf)
             self.total_currencies += money_value_float(portfolio.total_amount_currencies)
             self.total += money_value_float(portfolio.total_amount_portfolio)
@@ -41,8 +50,8 @@ class Portfolio:
             instrument = Instruments.get(figi)
             self.names[figi] = instrument.name
             self.sums[figi] = self.counts[figi] * money_value_float(self.positions[figi].current_price)
-            if figi in FUTURES_X1000_FIGIS:
-                self.sums[figi] *= 1000
+            if instrument.instrument_kind == InstrumentType.INSTRUMENT_TYPE_FUTURES:
+                self.convert_futures_sum(figi)
 
         self.sums = dict(sorted(self.sums.items(), key=lambda item: item[1], reverse=True))
 
@@ -83,3 +92,19 @@ class Portfolio:
         }
 
         return pd.DataFrame(df_data)
+
+    def convert_futures_sum(self, figi: str):
+        if Portfolio.contain_prefix(figi, FUTURES_X_1000_FIGIS_PREFIXES):
+            self.sums[figi] *= 1000
+        if Portfolio.contain_prefix(figi, FUTURES_X_0_01_FIGIS_PREFIXES):
+            self.sums[figi] *= 0.01
+        if Portfolio.contain_prefix(figi, FUTURES_X_USD_FIGIS_PREFIXES):
+            self.sums[figi] *= DOLLAR_CURRENCY
+
+
+    @staticmethod
+    def contain_prefix(figi: str, prefixes: [str]) -> bool:
+        for prefix in prefixes:
+            if prefix in figi:
+                return True
+        return False

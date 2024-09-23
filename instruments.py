@@ -11,7 +11,7 @@ CURRENCY_FIGIS = {
 }
 
 DOLLAR_FIGI = CURRENCY_FIGIS['usd']
-
+DOLLAR_CURRENCY = 92.59
 
 class Instruments:
     cache = dict()
