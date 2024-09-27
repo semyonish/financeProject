@@ -6,7 +6,8 @@ from useful_functions import quotation_float, money_value_float, rub_percent_str
     percent2f
 
 FUTURES_X_1000_FIGIS_PREFIXES = [
-    'FUTCNY'
+    'FUTCNY',
+    'FUTBR'
 ]
 
 FUTURES_X_USD_FIGIS_PREFIXES = [
