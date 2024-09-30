@@ -8,42 +8,53 @@ class BankStats:
     DEPOSITS: [Deposit] = []
     CREDITS: [CreditCard] = []
 
+    @staticmethod
     def add_deposit(dep: Deposit):
         BankStats.DEPOSITS += [dep]
 
+    @staticmethod
     def add_credit(credit: CreditCard):
         BankStats.CREDITS += [credit]
 
     @staticmethod
-    def info_dataframe() -> pd.DataFrame:
-        month_income_sum = 0
-        deposit_sum = 0
-        credit_sum = 0
+    def deposit_sum() -> float:
+        return sum(map(lambda dep: dep.value, BankStats.DEPOSITS))
 
+    @staticmethod
+    def deposit_month_income() -> float:
+        return sum(map(lambda dep: dep.get_month_income(), BankStats.DEPOSITS))
+
+    @staticmethod
+    def credit_sum() -> float:
+        return sum(map(lambda credit: credit.value, BankStats.CREDITS))
+
+    @staticmethod
+    def balance() -> float:
+        return BankStats.deposit_sum() - BankStats.credit_sum()
+
+    @staticmethod
+    def info_dataframe() -> pd.DataFrame:
         df_data = [['Депозиты', '', '', '']]
         df_data += [['Имя', 'Сумма', 'Проценты', 'Месячный доход']]
 
         for deposit in BankStats.DEPOSITS:
-            month_income = deposit.get_month_income()
-            month_income_sum += month_income
-            deposit_sum += deposit.value
-            df_data += [[deposit.name, float2f(deposit.value), float2f(deposit.percent), float2f(month_income)]]
+            df_data += [
+                [deposit.name, float2f(deposit.value), float2f(deposit.percent), float2f(deposit.get_month_income())]]
 
         df_data += [['', '', '', '']]
-        df_data += [['Всего', float2f(deposit_sum), '', float2f(month_income_sum)]]
+        df_data += [['Всего', float2f(BankStats.deposit_sum()), '', float2f(BankStats.deposit_month_income())]]
         df_data += [['', '', '', '']]
         df_data += [['Кредиты', '', '', '']]
         df_data += [['Имя', 'Сумма', '', '']]
 
         for credit in BankStats.CREDITS:
             df_data += [[credit.name, float2f(credit.value), '', '']]
-            credit_sum += credit.value
 
         df_data += [['', '', '', '']]
-        df_data += [['Всего', float2f(credit_sum), '', '']]
+        df_data += [['Всего', float2f(BankStats.credit_sum()), '', '']]
 
         df_data += [['', '', '', '']]
-        df_data += [['Баланс', float2f(deposit_sum - credit_sum), '', '']]
+        df_data += [['Баланс', float2f(BankStats.balance()), '', '']]
 
         df = pd.DataFrame(df_data)
         return df

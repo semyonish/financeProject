@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from TClient import TMergeClient
+from t_client import TMergeClient
 from bank_stats import BankStats
 from stats import Portfolio
 from values import TOKENS
