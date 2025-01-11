@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pandas as pd
 
+from all_stats import AllStats
 from t_client import TMergeClient
 from bank_stats import BankStats
 from stats import Portfolio
@@ -19,6 +20,9 @@ if __name__ == '__main__':
     print(portfolio.positions_dataframe())
     print('=======================================================================')
     print(BankStats.info_dataframe())
+    print('=======================================================================')
+    all_stats = AllStats(portfolio)
+    all_stats.print_info()
 
     with pd.ExcelWriter(f'data/{datetime.now().date()}.xlsx') as writer:
         portfolio.info_dataframe().to_excel(writer, sheet_name='Info', index=False, header=False)
