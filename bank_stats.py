@@ -1,6 +1,6 @@
 import pandas as pd
 
-from deposits import Deposit, CreditCard
+from deposits import Deposit, CreditCard, DepositAvailability
 from useful_functions import float2f
 
 
@@ -17,8 +17,8 @@ class BankStats:
         BankStats.CREDITS += [credit]
 
     @staticmethod
-    def deposit_sum() -> float:
-        return sum(map(lambda dep: dep.value, BankStats.DEPOSITS))
+    def deposit_sum(availability: DepositAvailability) -> float:
+        return sum(map(lambda dep: dep.get_available_value(availability), BankStats.DEPOSITS))
 
     @staticmethod
     def deposit_month_income() -> float:
@@ -29,8 +29,8 @@ class BankStats:
         return sum(map(lambda credit: credit.value, BankStats.CREDITS))
 
     @staticmethod
-    def balance() -> float:
-        return BankStats.deposit_sum() - BankStats.credit_sum()
+    def balance(availability: DepositAvailability = DepositAvailability.USUAL) -> float:
+        return BankStats.deposit_sum(availability) - BankStats.credit_sum()
 
     @staticmethod
     def info_dataframe() -> pd.DataFrame:
@@ -42,7 +42,7 @@ class BankStats:
                 [deposit.name, float2f(deposit.value), float2f(deposit.percent), float2f(deposit.get_month_income())]]
 
         df_data += [['', '', '', '']]
-        df_data += [['Всего', float2f(BankStats.deposit_sum()), '', float2f(BankStats.deposit_month_income())]]
+        df_data += [['Всего', float2f(BankStats.deposit_sum(DepositAvailability.USUAL)), '', float2f(BankStats.deposit_month_income())]]
         df_data += [['', '', '', '']]
         df_data += [['Кредиты', '', '', '']]
         df_data += [['Имя', 'Сумма', '', '']]
@@ -54,7 +54,9 @@ class BankStats:
         df_data += [['Всего', float2f(BankStats.credit_sum()), '', '']]
 
         df_data += [['', '', '', '']]
-        df_data += [['Баланс', float2f(BankStats.balance()), '', '']]
+        df_data += [['Баланс быстро', float2f(BankStats.balance(DepositAvailability.FAST)), '', '']]
+        df_data += [['Баланс средне', float2f(BankStats.balance()), '', '']]
+        df_data += [['Баланс', float2f(BankStats.balance(DepositAvailability.SLOW)), '', '']]
 
         df = pd.DataFrame(df_data)
         return df
